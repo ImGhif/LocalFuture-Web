@@ -38,5 +38,3 @@ if (contactForm) {
 
 /* Carousel initialization for elements with [data-carousel] */
 // Carousel removed — authors are displayed as an elegant responsive grid now.
-
-// Tab behavior removed: news buttons were removed, content remains visible.
