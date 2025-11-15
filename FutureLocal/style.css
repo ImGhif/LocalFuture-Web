@@ -165,7 +165,6 @@ nav.primary a[data-page-link="current"]::after {
   display: block;
   width: 100%;
   height: auto;
-  /* vertical-align: middle; */
 }
 
 /* Content blocks */
