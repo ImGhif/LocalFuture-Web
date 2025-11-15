@@ -38,3 +38,133 @@ if (contactForm) {
 
 /* Carousel initialization for elements with [data-carousel] */
 // Carousel removed — authors are displayed as an elegant responsive grid now.
+
+// Tab behavior removed: news buttons were removed, content remains visible.
+// Author detail modal behavior
+
+
+(() => {
+  const modalOverlay = document.getElementById("author-modal");
+  if (!modalOverlay) return;
+
+  const q = (sel, ctx = document) => ctx.querySelector(sel);
+  const nameEl = document.getElementById("modal-name");
+  const roleEl = document.getElementById("modal-role");
+  const avatarEl = document.getElementById("modal-avatar");
+  const expEl = document.getElementById("modal-experience");
+  const skillsEl = document.getElementById("modal-skills");
+  const tasksEl = document.getElementById("modal-tasks");
+  const socialEl = document.getElementById("modal-social");
+  const timelineEl = document.getElementById("modal-timeline");
+  const closeBtn = q(".modal-close", modalOverlay);
+
+  function setModalAvatar(src, alt) {
+    if (!avatarEl) return;
+    if (src) {
+      avatarEl.src = src;
+      avatarEl.alt = alt || "Author photo";
+      avatarEl.parentElement &&
+        avatarEl.parentElement.setAttribute("aria-hidden", "false");
+    } else {
+      avatarEl.src = "";
+      avatarEl.alt = "";
+      avatarEl.parentElement &&
+        avatarEl.parentElement.setAttribute("aria-hidden", "true");
+    }
+  }
+
+  function openModal(data) {
+    if (!modalOverlay) return;
+    nameEl.textContent = data.name || "";
+    roleEl.textContent = data.role || "";
+    expEl.textContent = data.experience || "";
+    skillsEl.textContent = data.skills || "";
+    tasksEl.textContent = data.tasks || "";
+
+    // render social icon links
+    const socials = [];
+    if (data.github)
+      socials.push({ href: data.github, icon: "bi-github", label: "GitHub" });
+    if (data.linkedin)
+      socials.push({
+        href: data.linkedin,
+        icon: "bi-linkedin",
+        label: "LinkedIn",
+      });
+    if (data.instagram)
+      socials.push({
+        href: data.instagram,
+        icon: "bi-instagram",
+        label: "Instagram",
+      });
+    if (data.twitter)
+      socials.push({
+        href: data.twitter,
+        icon: "bi-twitter",
+        label: "Twitter",
+      });
+
+    if (socials.length) {
+      socialEl.innerHTML = socials
+        .map(
+          (s) =>
+            `<a class="social-link" href="${s.href}" target="_blank" rel="noopener noreferrer" aria-label="${s.label}"><i class="bi ${s.icon}"></i></a>`
+        )
+        .join(" ");
+    } else {
+      socialEl.textContent = data.social || "";
+    }
+
+    timelineEl.textContent = data.timeline || "";
+
+    setModalAvatar(data.avatar || "", data.avatarAlt || "");
+
+    modalOverlay.classList.add("open");
+    modalOverlay.setAttribute("aria-hidden", "false");
+    document.documentElement.style.overflow = "hidden";
+    closeBtn && closeBtn.focus();
+  }
+
+  function closeModal() {
+    modalOverlay.classList.remove("open");
+    modalOverlay.setAttribute("aria-hidden", "true");
+    document.documentElement.style.overflow = "";
+  }
+
+  document.querySelectorAll(".author-card").forEach((card) => {
+    card.addEventListener("click", (e) => {
+      const d = card.dataset || {};
+      const data = {
+        name: d.name || card.querySelector(".name")?.textContent || "",
+        role: d.role || card.querySelector(".role")?.textContent || "",
+        experience: d.experience || "",
+        skills: d.skills || "",
+        tasks: d.tasks || "",
+        github: d.github || "",
+        linkedin: d.linkedin || "",
+        instagram: d.instagram || "",
+        twitter: d.twitter || "",
+        social: d.social || "",
+        timeline: d.timeline || "",
+        avatar: d.avatar || card.querySelector("img.avatar")?.src || "",
+        avatarAlt: d.avatarAlt || card.querySelector("img.avatar")?.alt || "",
+      };
+      openModal(data);
+    });
+  });
+
+  closeBtn && closeBtn.addEventListener("click", closeModal);
+
+  modalOverlay.addEventListener("click", (e) => {
+    if (e.target === modalOverlay) closeModal();
+  });
+
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modalOverlay.classList.contains("open"))
+      closeModal();
+  });
+
+  document
+    .querySelectorAll(".modal")
+    .forEach((m) => m.addEventListener("click", (e) => e.stopPropagation()));
+})();
