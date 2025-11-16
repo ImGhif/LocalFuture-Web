@@ -188,6 +188,80 @@ nav.primary a[data-page-link="current"]::after {
   }
 }
 
+/* Hamburger menu for small devices */
+.hamburger {
+  display: none;
+  background: transparent;
+  border: 0;
+  padding: 8px;
+  margin-left: 8px;
+  cursor: pointer;
+}
+.hamburger .hamburger-box {
+  display: inline-block;
+  width: 28px;
+  height: 18px;
+  position: relative;
+}
+.hamburger .hamburger-inner {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: translateY(-50%);
+}
+.hamburger .hamburger-inner::before,
+.hamburger .hamburger-inner::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+}
+.hamburger .hamburger-inner::before {
+  top: -8px;
+}
+.hamburger .hamburger-inner::after {
+  bottom: -8px;
+}
+
+/* Hide normal nav on small screens; show via header.menu-open */
+@media (max-width: 820px) {
+  .hamburger {
+    display: inline-block;
+  }
+  nav.primary {
+    display: none;
+    position: absolute;
+    top: 80px;
+    right: 0;
+    left: 0;
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 8px 30px rgba(12, 12, 12, 0.08);
+    z-index: 90;
+  }
+  header.site-header.menu-open nav.primary {
+    display: block;
+  }
+  nav.primary ul {
+    flex-direction: column;
+    gap: 0;
+    padding: 12px;
+  }
+  nav.primary li {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  }
+  nav.primary a {
+    display: block;
+    padding: 12px 16px;
+  }
+}
+
+/* When menu open, script will prevent body scroll by setting overflow hidden on <html> */
+
 /* right column image mockup */
 .hero .hero-art {
   display: flex;
@@ -874,5 +948,105 @@ footer .small {
     width: 100%;
     height: auto;
     border-radius: 8px;
+  }
+}
+
+/* Responsive enhancements: nav scrolling, tighter hero, stacked layouts */
+@media (max-width: 1000px) {
+  .wrap {
+    padding: 0 20px;
+  }
+  .hero h1 {
+    font-size: 48px;
+  }
+  .hero p {
+    font-size: 16px;
+  }
+  nav.primary ul {
+    gap: 18px;
+  }
+}
+
+@media (max-width: 820px) {
+  /* make nav horizontally scrollable on small screens */
+  nav.primary {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  nav.primary ul {
+    display: flex;
+    gap: 14px;
+    padding: 8px 0;
+  }
+  nav.primary ul::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  /* stack video gallery vertically */
+  .video-gallery {
+    grid-template-columns: 1fr;
+  }
+  .video-sidebar {
+    order: 2;
+  }
+  .video-thumbnails {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-height: 140px;
+  }
+  .video-thumbnails::-webkit-scrollbar {
+    height: 8px;
+  }
+  .video-thumb {
+    min-width: 120px;
+    flex-direction: column;
+    align-items: center;
+  }
+  .thumb-desc {
+    display: none;
+  }
+
+  /* Constrain main video on phones so it isn't too wide */
+  .video-main {
+    max-width: 720px; /* keep a comfortable max for larger phones/tablets */
+    margin: 0 auto; /* center within the page */
+    width: 100%;
+  }
+
+  /* forms & modal adjustments */
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .wrap {
+    padding: 0 12px;
+  }
+  .hero h1 {
+    font-size: 32px;
+  }
+  .brand {
+    font-size: 14px;
+  }
+  nav.primary a {
+    font-size: 13px;
+  }
+  .video-thumb {
+    min-width: 100px;
+  }
+  .authors-grid {
+    grid-template-columns: 1fr;
+  }
+  .btn.cta {
+    padding: 12px;
+    font-size: 14px;
+  }
+  /* Smaller phones: limit main video width further for a better fit */
+  .video-main {
+    max-width: 360px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }

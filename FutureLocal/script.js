@@ -334,3 +334,53 @@ if (contactForm) {
     }
   });
 })();
+
+// Mobile hamburger toggle: open/close, aria-expanded, close on link/Escape
+(function () {
+  const btn = document.querySelector(".hamburger");
+  const header =
+    document.querySelector("header.site-header") ||
+    document.querySelector("header");
+  const nav =
+    document.querySelector("nav.primary") || document.querySelector("nav");
+  if (!btn || !header || !nav) return;
+
+  const OPEN = "menu-open";
+
+  function setOpen(open) {
+    if (open) {
+      header.classList.add(OPEN);
+      btn.setAttribute("aria-expanded", "true");
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      header.classList.remove(OPEN);
+      btn.setAttribute("aria-expanded", "false");
+      document.documentElement.style.overflow = "";
+    }
+  }
+
+  btn.addEventListener("click", function () {
+    setOpen(!header.classList.contains(OPEN));
+  });
+
+  // Close when a nav link is clicked (use capture to catch links added dynamically)
+  nav.querySelectorAll("a").forEach((a) =>
+    a.addEventListener("click", function () {
+      setOpen(false);
+    })
+  );
+
+  // Close on Escape
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") setOpen(false);
+  });
+
+  // If the viewport is resized to desktop size, ensure menu is closed
+  let resizeTimer;
+  window.addEventListener("resize", function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      if (window.innerWidth > 820) setOpen(false);
+    }, 120);
+  });
+})();
