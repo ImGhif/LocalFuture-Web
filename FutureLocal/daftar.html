@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Daftar Warga Baru — Future—Local</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <header class="site-header" role="banner">
+      <div class="wrap">
+        <div class="brand">Future—Local</div>
+        <nav class="primary" role="navigation" aria-label="Main menu">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#visimisi">Visi Misi</a></li>
+            <li><a href="index.html#kegiatan">Kegiatan</a></li>
+            <li><a href="index.html#permission">Permohonan Warga</a></li>
+            <li><a href="index.html#pesan">Pesan</a></li>
+            <li><a href="author.html">Author</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="wrap">
+        <section class="section" style="padding-top: 120px">
+          <div class="kicker">DAFTAR WARGA BARU</div>
+          <h2 class="section-title">Form Pendaftaran Online</h2>
+
+          <form id="daftarForm" class="form-grid" enctype="multipart/form-data">
+            <div class="form-field">
+              <label for="firstName">Nama Depan</label>
+              <input
+                id="firstName"
+                name="firstName"
+                type="text"
+                required
+                placeholder="Nama depan"
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="lastName">Nama Belakang</label>
+              <input
+                id="lastName"
+                name="lastName"
+                type="text"
+                required
+                placeholder="Nama belakang"
+              />
+            </div>
+
+            <div class="form-field" style="grid-column: 1 / -1">
+              <label for="address">Alamat Asal</label>
+              <input
+                id="address"
+                name="address"
+                type="text"
+                required
+                placeholder="Alamat asal (jalan, RT/RW, desa)"
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="phone">Nomor HP</label>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                required
+                placeholder="08xx..."
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="email">Email</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="example@domain.com"
+              />
+            </div>
+
+            <div class="form-field" style="grid-column: 1 / -1">
+              <label for="photo">Unggah KTP / Foto (jpg, png)</label>
+              <input id="photo" name="photo" type="file" accept="image/*" />
+              <div
+                id="photoPreview"
+                class="file-preview"
+                aria-hidden="true"
+              ></div>
+              <div class="form-note">
+                Ukuran maksimal 5MB. Foto dipakai sebagai bukti identitas
+                sementara.
+              </div>
+            </div>
+
+            <div
+              style="
+                grid-column: 1 / -1;
+                display: flex;
+                gap: 12px;
+                align-items: center;
+              "
+            >
+              <button class="btn primary cta" type="submit">
+                Submit Pendaftaran <span class="btn-icon">✓</span>
+              </button>
+              <a class="btn" href="index.html">Batal</a>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
