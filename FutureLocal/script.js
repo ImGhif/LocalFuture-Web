@@ -42,7 +42,6 @@ if (contactForm) {
 // Tab behavior removed: news buttons were removed, content remains visible.
 // Author detail modal behavior
 
-
 (() => {
   const modalOverlay = document.getElementById("author-modal");
   if (!modalOverlay) return;
@@ -167,4 +166,171 @@ if (contactForm) {
   document
     .querySelectorAll(".modal")
     .forEach((m) => m.addEventListener("click", (e) => e.stopPropagation()));
+})();
+
+// Scroll-based navigation underline update (restored)
+(() => {
+  function updateActiveNavLink() {
+    const sections = document.querySelectorAll("section[id]");
+    if (!sections.length) return;
+
+    let currentSection = null;
+    const viewportCenter = window.innerHeight / 3;
+
+    // find which section is in the upper third of the viewport
+    sections.forEach((section) => {
+      const rect = section.getBoundingClientRect();
+      if (rect.top <= viewportCenter && rect.bottom > 0) {
+        currentSection = section.id;
+      }
+    });
+
+    // fallback: choose the section closest to top
+    if (!currentSection) {
+      let closest = null;
+      let minDist = Infinity;
+      sections.forEach((section) => {
+        const rect = section.getBoundingClientRect();
+        const d = Math.abs(rect.top);
+        if (d < minDist) {
+          minDist = d;
+          closest = section.id;
+        }
+      });
+      currentSection = closest;
+    }
+
+    // Determine if we're at the very top (Home should be active)
+    const atTop = window.scrollY <= 80;
+
+    document.querySelectorAll("nav.primary a").forEach((link) => {
+      const href = link.getAttribute("href") || "";
+
+      // Home link (index.html) active when atTop
+      if (href === "index.html") {
+        if (atTop) link.setAttribute("data-page-link", "current");
+        else link.removeAttribute("data-page-link");
+        return;
+      }
+
+      // Anchor links active when not at top and matching currentSection
+      if (href.startsWith("#")) {
+        if (!atTop && currentSection && href === "#" + currentSection) {
+          link.setAttribute("data-page-link", "current");
+        } else {
+          link.removeAttribute("data-page-link");
+        }
+      }
+    });
+  }
+
+  window.addEventListener("scroll", updateActiveNavLink, { passive: true });
+  window.addEventListener("resize", updateActiveNavLink);
+  // run on load
+  document.addEventListener("DOMContentLoaded", updateActiveNavLink);
+  updateActiveNavLink();
+})();
+
+// Video gallery: switch main video on thumbnail click + generate thumbnails from first frame
+(() => {
+  const mainVideo = document.getElementById("mainVideo");
+  const thumbs = document.querySelectorAll(".video-thumb");
+  if (!mainVideo || !thumbs.length) return;
+
+  function loadVideo(videoPath) {
+    mainVideo.src = videoPath;
+    mainVideo.play().catch(() => {
+      // play may fail if autoplay is blocked
+    });
+  }
+
+  function generateThumbnail(videoPath, canvas) {
+    const video = document.createElement("video");
+    video.crossOrigin = "anonymous";
+    video.src = videoPath;
+    video.currentTime = 1; // capture frame at 1 second
+
+    video.addEventListener("seeked", () => {
+      const ctx = canvas.getContext("2d");
+      canvas.width = 160;
+      canvas.height = 90;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    });
+
+    video.load();
+  }
+
+  // Generate thumbnails and load first video
+  thumbs.forEach((thumb, idx) => {
+    const videoPath = thumb.getAttribute("data-video");
+    const canvas = thumb.querySelector(".thumb-canvas");
+    if (canvas) {
+      generateThumbnail(videoPath, canvas);
+    }
+    // Load first video on page load
+    if (idx === 0) {
+      loadVideo(videoPath);
+    }
+  });
+
+  // Attach click handlers to thumbnails
+  thumbs.forEach((thumb) => {
+    thumb.addEventListener("click", () => {
+      const videoPath = thumb.getAttribute("data-video");
+      loadVideo(videoPath);
+
+      // Update active state
+      thumbs.forEach((t) => t.classList.remove("active"));
+      thumb.classList.add("active");
+    });
+  });
+})();
+
+// Daftar (registration) form: preview photo + submit stub
+(function () {
+  const form = document.getElementById("daftarForm");
+  if (!form) return;
+
+  const fileInput = document.getElementById("photo");
+  const preview = document.getElementById("photoPreview");
+
+  fileInput &&
+    fileInput.addEventListener("change", (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) {
+        preview.innerHTML = "";
+        preview.setAttribute("aria-hidden", "true");
+        return;
+      }
+
+      // basic size check (5MB)
+      const maxBytes = 5 * 1024 * 1024;
+      if (file.size > maxBytes) {
+        alert("File terlalu besar. Maksimum 5MB.");
+        fileInput.value = "";
+        preview.innerHTML = "";
+        preview.setAttribute("aria-hidden", "true");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (evt) {
+        preview.innerHTML = `<img src="${evt.target.result}" alt="Preview foto" />`;
+        preview.setAttribute("aria-hidden", "false");
+      };
+      reader.readAsDataURL(file);
+    });
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    // Collect values (demo only) — in a real app, send via fetch to backend
+    const data = new FormData(form);
+    const name = data.get("firstName") + " " + data.get("lastName");
+    alert(`Terima kasih, ${name}. Pendaftaran Anda telah diterima (demo).`);
+    form.reset();
+    if (preview) {
+      preview.innerHTML = "";
+      preview.setAttribute("aria-hidden", "true");
+    }
+  });
 })();
